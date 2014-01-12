@@ -871,7 +871,7 @@ ifdef is_tests_build
 endif
 
 systemimage-squisher: $(INTERNAL_SYSTEMIMAGE_FILES)
-	@echo -e ${CL_RED}"Optimizing PNGs to make you ROM more awesome!"${CL_RST}
+	@echo -e ${CL_CYN}"Optimizing PNGs to make you ROM more awesome!"${CL_RST}
 	$(hide) APKCERTS=$(APKCERTS_FILE) ./vendor/cm/tools/squisher
 
 .PHONY: systemimage-squisher
