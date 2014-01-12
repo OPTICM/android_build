@@ -169,13 +169,25 @@ def add_to_manifest(repositories, fallback_branch = None):
     for repository in repositories:
         repo_name = repository['repository']
         repo_target = repository['target_path']
+        rom = None
+        
+        # Check if repo exists in Hellybean repo tree
+        req = urllib.request.Request("https://github.com/Hellybean/%s" % repo_name)
+        try:
+            urllib.request.urlopen(req)
+            rom = 'Hellybean'
+        except urllib.error.HTTPError as e:
+            rom = 'CyanogenMod'
+
+        print("Found repo at: https://github.com/%s/%s" % (rom, repo_name))
+
         if exists_in_tree(lm, repo_name):
-            print('CyanogenMod/%s already exists' % (repo_name))
+            print('%s/%s already exists' % (rom, repo_name))
             continue
 
-        print('Adding dependency: CyanogenMod/%s -> %s' % (repo_name, repo_target))
+        print('Adding dependency: %s/%s -> %s' % (rom, repo_name, repo_target))
         project = ElementTree.Element("project", attrib = { "path": repo_target,
-            "remote": "github", "name": "CyanogenMod/%s" % repo_name })
+            "remote": "github", "name": "%s/%s" % (rom, repo_name) })
 
         if 'branch' in repository:
             project.set('revision',repository['branch'])
@@ -206,7 +218,7 @@ def fetch_dependencies(repo_path, fallback_branch = None):
         fetch_list = []
 
         for dependency in dependencies:
-            if not is_in_manifest("CyanogenMod/%s" % dependency['repository']):
+            if not is_in_manifest("CyanogenMod/%s" % dependency['repository']) and not is_in_manifest("Hellybean/%s" % dependency['repository']):
                 fetch_list.append(dependency)
                 syncable_repos.append(dependency['target_path'])
 
