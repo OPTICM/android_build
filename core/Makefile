@@ -1337,7 +1337,6 @@ endif
 ifdef BOARD_KERNEL_PAGESIZE
 	$(hide) echo "$(BOARD_KERNEL_PAGESIZE)" > $(zip_root)/RECOVERY/pagesize
 endif
-
 	@# Components of the boot image
 	$(hide) mkdir -p $(zip_root)/BOOT
 	$(hide) $(call package_files-copy-root, \
