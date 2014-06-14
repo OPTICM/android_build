@@ -68,14 +68,16 @@ endif
 
 TARGET_NO_UNDEFINED_LDFLAGS := -Wl,--no-undefined
 
-TARGET_arm_CFLAGS :=    -O3 -DNDEBUG \
+TARGET_arm_CFLAGS :=    -O3\
+			-DNDEBUG \
                         -fomit-frame-pointer \
                         -fstrict-aliasing    \
                         -funswitch-loops
 
 # Modules can choose to compile some source as thumb.
 TARGET_thumb_CFLAGS :=  -mthumb \
-                        -Os -DNDEBUG \
+                        -Os \
+			-DNDEBUG \
                         -fomit-frame-pointer \
                         -fno-strict-aliasing
 

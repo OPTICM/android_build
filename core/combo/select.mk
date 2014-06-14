@@ -47,13 +47,13 @@ $(combo_target)HAVE_STRLCAT := 0
 $(combo_target)HAVE_KERNEL_MODULES := 0
 
 ifneq ($(TARGET_USE_03),true)
-$(combo_target)GLOBAL_CFLAGS := -DNDEBUG -fno-exceptions -Wno-multichar
+$(combo_target)GLOBAL_CFLAGS := -O3 -DNDEBUG -fno-exceptions -Wno-multichar
 $(combo_target)RELEASE_CFLAGS := -O3 -DNDEBUG -g -fno-strict-aliasing
 else
 $(combo_target)GLOBAL_CFLAGS := -O3 -DNDEBUG -g -Wstrict-aliasing=2
 (combo_target)RELEASE_CFLAGS := -DNDEBUG -Werror=strict-aliasing
 endif
-$(combo_target)GLOBAL_LDFLAGS := -Wl,-O2
+$(combo_target)GLOBAL_LDFLAGS := -Wl,-O1 -Wl,--as-needed -Wl,--relax -Wl,--sort-common -Wl,--gc-sections
 $(combo_target)GLOBAL_ARFLAGS := crsP
 
 $(combo_target)EXECUTABLE_SUFFIX :=
