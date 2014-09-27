@@ -521,6 +521,19 @@ else if get_stage("%(bcb_dev)s", "stage") == "3/3" then
   if OPTIONS.wipe_user_data:
     script.FormatPartition("/data")
 
+  script.Print("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
+  script.Print("     \ )        (          )\ ) )\ )          ")
+  script.Print("     (()/  (   ( )\     (  (()/((()/(         ")
+  script.Print("     (_)) ((_) (_)_)   /((_)(_)) (_))         ")
+  script.Print("     | |   (_) / _ \ (_))( |_ _| |   \        ")
+  script.Print("     | |__ | || (_) || || | | |  | |) |       ")
+  script.Print("     |____||_| \__\_\ \_,_||___| |___/        ")	  	
+  script.Print("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
+  script.Print("        <%%% Liquid Element X %%%>            ")
+  script.Print("          <%%% By liquid0624 %%%>             ")
+  script.Print("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
+  script.Print("Erasing System...")
+
   script.Mount("/data")
   script.ValidateSignatures("data")
   script.Unmount("/data")
@@ -529,10 +542,13 @@ else if get_stage("%(bcb_dev)s", "stage") == "3/3" then
     WritePolicyConfig(OPTIONS.info_dict["selinux_fc"], output_zip)
 
   script.FormatPartition("/system")
+  script.Print("Mounting System...")
   script.Mount("/system")
   #if not OPTIONS.no_separate_recovery:
   #  script.UnpackPackageDir("recovery", "/system")
+  script.Print("Installing System...")
   script.UnpackPackageDir("system", "/system")
+  script.Print("Creating Symlinks...")
 
   symlinks = CopySystemFiles(input_zip, output_zip)
   script.MakeSymlinks(symlinks)
@@ -556,9 +572,11 @@ else if get_stage("%(bcb_dev)s", "stage") == "3/3" then
     script.RunBackup("restore")
 
   script.ShowProgress(0.2, 10)
+  script.Print("Flashing Boot Image...")
   script.WriteRawImage("/boot", "boot.img")
 
   script.ShowProgress(0.1, 0)
+  script.Print("Installation Completed!")
   device_specific.FullOTA_InstallEnd()
 
   if OPTIONS.extra_script is not None:
