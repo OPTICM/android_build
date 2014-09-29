@@ -71,7 +71,8 @@ TARGET_NO_UNDEFINED_LDFLAGS := -Wl,--no-undefined
 TARGET_mips_CFLAGS :=	-O2 \
 			-fomit-frame-pointer \
 			-fno-strict-aliasing    \
-			-funswitch-loops
+			-funswitch-loops \
+			-Wno-uninitialized
 
 # Set FORCE_MIPS_DEBUGGING to "true" in your buildspec.mk
 # or in your environment to gdb debugging easier.
@@ -92,6 +93,9 @@ TARGET_GLOBAL_CFLAGS += \
 			-Wa,--noexecstack \
 			-Werror=format-security \
 			-D_FORTIFY_SOURCE=2 \
+			-Wno-unused-parameter \
+			-Wno-uninitialized \
+			-Wno-sign-compare \
 			$(arch_variant_cflags) \
 			-include $(android_config_h) \
 			-I $(dir $(android_config_h))
@@ -99,7 +103,7 @@ TARGET_GLOBAL_CFLAGS += \
 # This warning causes dalvik not to build with gcc 4.6+ and -Werror.
 # We cannot turn it off blindly since the option is not available
 # in gcc-4.4.x.
-ifneq ($(filter 4.6 4.6.% 4.7 4.7.%, $(TARGET_GCC_VERSION)),)
+ifneq ($(filter 4.6 4.6.% 4.7 4.7.% 4.8 4.8.%, $(TARGET_GCC_VERSION)),)
 TARGET_GLOBAL_CFLAGS += -Wno-unused-but-set-variable \
                         -fno-strict-volatile-bitfields
 endif
@@ -134,7 +138,9 @@ TARGET_RELEASE_CFLAGS := \
 			-Wstrict-aliasing=2 \
 			-fgcse-after-reload \
 			-frerun-cse-after-loop \
-			-frename-registers
+			-frename-registers \
+			-Wno-unused-parameter \
+			-Wno-uninitialized
 
 libc_root := bionic/libc
 libm_root := bionic/libm
