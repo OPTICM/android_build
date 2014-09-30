@@ -546,9 +546,9 @@ else if get_stage("%(bcb_dev)s", "stage") == "3/3" then
   if OPTIONS.wipe_user_data:
     script.FormatPartition("/data")
 
-  script.Mount("/data")
+  script.Mountdata("/data")
   script.ValidateSignatures("data")
-  script.Unmount("/data")
+  script.Unmountdata("/data")
 
   if "selinux_fc" in OPTIONS.info_dict:
     WritePolicyConfig(OPTIONS.info_dict["selinux_fc"], output_zip)

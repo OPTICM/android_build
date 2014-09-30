@@ -183,6 +183,14 @@ class EdifyGenerator(object):
     """Unmount the partiiton with the given mount_point."""
     self.script.append('unmount("/system");')
 
+  def Mountdata(self, mount_point):
+    """Mount the partition with the given mount_point."""
+    self.script.append('run_program("/sbin/busybox", "mount", "/data");')
+
+  def Unmountdata(self, mount_point):
+    """Unmount the partiiton with the given mount_point."""
+    self.script.append('unmount("/data");')
+
   def UnpackPackageDir(self, src, dst):
     """Unpack a given directory from the OTA package into the given
     destination directory."""
