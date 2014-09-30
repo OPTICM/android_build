@@ -177,19 +177,11 @@ class EdifyGenerator(object):
 
   def Mount(self, mount_point):
     """Mount the partition with the given mount_point."""
-    fstab = self.info.get("fstab", None)
-    if fstab:
-      p = fstab[mount_point]
-      self.script.append('mount("%s", "%s", "%s", "%s");' %
-                         (p.fs_type, common.PARTITION_TYPES[p.fs_type],
-                          p.device, p.mount_point))
-      self.mounts.add(p.mount_point)
+    self.script.append('run_program("/sbin/busybox", "mount", "/system");')
 
   def Unmount(self, mount_point):
     """Unmount the partiiton with the given mount_point."""
-    if mount_point in self.mounts:
-      self.mounts.remove(mount_point)
-      self.script.append('unmount("%s");' % (mount_point,))
+    self.script.append('unmount("/system");')
 
   def UnpackPackageDir(self, src, dst):
     """Unpack a given directory from the OTA package into the given
