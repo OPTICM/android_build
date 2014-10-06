@@ -901,6 +901,12 @@ ifdef is_tests_build
 #    $(tests_MODULES))
 endif
 
+systemimage-squisher: $(INTERNAL_SYSTEMIMAGE_FILES)
+	@echo -e ${CL_CYN}"Optimizing PNGs to make you ROM more awesome!"${CL_RST}
+	$(hide) APKCERTS=$(APKCERTS_FILE) ./vendor/cm/tools/squisher
+
+.PHONY: systemimage-squisher
+
 FULL_SYSTEMIMAGE_DEPS := $(INTERNAL_SYSTEMIMAGE_FILES) $(INTERNAL_USERIMAGES_DEPS)
 # -----------------------------------------------------------------
 # installed file list
