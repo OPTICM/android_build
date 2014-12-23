@@ -25,6 +25,8 @@ Invoke ". build/envsetup.sh" from your shell to add the following functions to y
 - aospremote: Add git remote for matching AOSP repository
 - cafremote: Add git remote for matching CodeAurora repository.
 - mka:      Builds using SCHED_BATCH on all processors
+- mkap:     Builds the module(s) using mka and pushes them to the device.
+- cmka:     Cleans and builds using mka.
 - reposync: Parallel repo sync using ionice and SCHED_BATCH
 - repopick: Utility to fetch changes from Gerrit.
 - installboot: Installs a boot.img to the connected device.
@@ -1564,21 +1566,13 @@ function godir () {
 function cmremote()
 {
     git remote rm cmremote 2> /dev/null
-    if [ ! -d .git ]
-    then
-        echo .git directory not found. Please run this from the root directory of the Android repository you wish to set up.
-    fi
-    GERRIT_REMOTE=$(cat .git/config  | grep git://github.com | awk '{ print $NF }' | sed s#git://github.com/##g)
+    GERRIT_REMOTE=$(git config --get remote.github.projectname)
     if [ -z "$GERRIT_REMOTE" ]
     then
-        GERRIT_REMOTE=$(cat .git/config  | grep http://github.com | awk '{ print $NF }' | sed s#http://github.com/##g)
-        if [ -z "$GERRIT_REMOTE" ]
-        then
-          echo Unable to set up the git remote, are you in the root of the repo?
-          return 0
-        fi
+        echo Unable to set up the git remote, are you under a git repo?
+        return 0
     fi
-    CMUSER=`git config --get review.review.cyanogenmod.org.username`
+    CMUSER=$(git config --get review.review.cyanogenmod.org.username)
     if [ -z "$CMUSER" ]
     then
         git remote add cmremote ssh://review.cyanogenmod.org:29418/$GERRIT_REMOTE
@@ -2012,6 +2006,26 @@ function mka() {
     esac
 }
 
+function cmka() {
+    if [ ! -z "$1" ]; then
+        for i in "$@"; do
+            case $i in
+                bacon|otapackage|systemimage)
+                    mka installclean
+                    mka $i
+                    ;;
+                *)
+                    mka clean-$i
+                    mka $i
+                    ;;
+            esac
+        done
+    else
+        mka clean
+        mka
+    fi
+}
+
 function reposync() {
     case `uname -s` in
         Darwin)
@@ -2123,7 +2137,7 @@ EOF
                 fi
                 adb shell restorecon "$TARGET"
             ;;
-            /system/priv-app/SystemUI.apk|/system/framework/*)
+            /system/priv-app/SystemUI/SystemUI.apk|/system/framework/*)
                 # Only need to stop services once
                 if ! $stop_n_start; then
                     adb shell stop
